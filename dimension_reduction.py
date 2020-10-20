@@ -12,9 +12,6 @@ from sklearn.feature_selection import mutual_info_classif
 
 class DoPCA:
 
-    """
-    """
-
     def __init__(self, dat,
                  features=None, indeces=None, labels=None,  # for vizualize()
                  n_components: int = 2,
