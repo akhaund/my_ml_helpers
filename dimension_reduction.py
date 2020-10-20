@@ -100,6 +100,11 @@ class DoPCA:
             save_plot(fig, f'pca_view_{n_comp}d')
 
 
+class DoLDA:
+
+    pass
+
+
 def get_mutual_info(df, labels, discretes,
                     save_plot=None,
                     show_plot: bool = True):
