@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 
-from scipy import linalg
+from scipy.linalg import svd
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import mutual_info_classif
@@ -149,7 +149,7 @@ def do_mca(df,
     D_c_sqrt = np.sqrt(np.diag(sum_c**-1))
 
     mca_mat = D_r_sqrt @ Z_residual @ D_c_sqrt
-    _, S, Qh = linalg.svd(mca_mat, full_matrices=False)
+    _, S, Qh = svd(mca_mat, full_matrices=False)
     Q = Qh.T
 
     G = D_c_sqrt @ Q @ np.diag(S)
