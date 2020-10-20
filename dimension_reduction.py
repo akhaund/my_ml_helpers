@@ -57,14 +57,14 @@ class DoPCA:
         """
         pca_components = pd.DataFrame(
             data=self._pca.components_[:, :n_comp],
-            index=features,
-            columns=['PC' + str(i+1) for i in range(n_comp)])
+                         index=features,
+                         columns=['PC' + str(i+1) for i in range(n_comp)])
         pca_transformed = pd.DataFrame(
-            data=np.concatenate((self._pca.transform(dat)[:, :n_comp],
-                                 labels.reshape(len(labels), 1),
-                                 indeces.reshape(len(indeces), 1)),
-                                axis=1),
-            columns=list(pca_components.columns) + ['label', 'id'])
+                data=np.concatenate((self._pca.transform(dat)[:, :n_comp],
+                                     labels.reshape(len(labels), 1),
+                                     indeces.reshape(len(indeces), 1)),
+                                    axis=1),
+                columns=list(pca_components.columns) + ['label', 'id'])
         # Plotting
         if n_comp == 2:
             plotter = px.scatter
