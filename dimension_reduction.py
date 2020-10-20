@@ -12,14 +12,17 @@ from sklearn.feature_selection import mutual_info_classif
 
 class DoPCA:
 
+    """
+    """
+
     def __init__(self, dat,
                  features=None, indeces=None, labels=None,  # for vizualize()
                  n_components: int = 2,
-                 scale: int = 5,  # for visibility of feature projections
+                 scale: int = 5,  # for visibility of feature axes projections
                  mode: str = None,
                  feature_projections: bool = False,
                  show_plot: bool = True,
-                 save_plot=None):
+                 save_plot=None) -> None:
         dat = StandardScaler().fit_transform(dat)
         self._pca = PCA().fit(dat)
         if mode == 'visualize':
@@ -102,7 +105,11 @@ class DoPCA:
 
 class DoLDA:
 
-    pass
+    """
+    """
+
+    def __init__(self) -> None:
+        pass
 
 
 def get_mutual_info(df, labels, discretes,
