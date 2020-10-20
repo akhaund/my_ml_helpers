@@ -30,7 +30,7 @@ class DoPCA:
 
     def explained_variance(self,
                            show_plot: bool = True,
-                           save_plot=None):
+                           save_plot=None) -> None:
         """
         Can be used as a feature-space reduction step before model training.
         """
@@ -51,7 +51,7 @@ class DoPCA:
     def vizualize(self, n_comp, dat, features, labels, indeces, scale,
                   feature_projections: bool,
                   show_plot: bool = True,
-                  save_plot=None):
+                  save_plot=None) -> None:
         """
         Visualize data along 2 or 3 principal components.
         """
