@@ -35,6 +35,7 @@ class DoPCA:
                            show_plot: bool = True,
                            save_plot=None):
         """
+        Can be used as a feature-space reduction step before model training.
         """
         expl_var = pd.Series(self._pca.explained_variance_ratio_.cumsum())
         expl_var.index += 1
@@ -55,6 +56,7 @@ class DoPCA:
                   show_plot: bool = True,
                   save_plot=None):
         """
+        Visualize data along 2 or 3 principal components.
         """
         pca_components = \
             pd.DataFrame(data=self._pca.components_[:, :n_comp],
