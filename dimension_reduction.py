@@ -154,7 +154,7 @@ def do_mca(df,
 
     G = D_c_sqrt @ Q @ np.diag(S)
 
-    eig_vals = S**2
+    eig_vals = S ** 2
     explained_variance = eig_vals / eig_vals.sum()
     explained_variance = \
         pd.DataFrame({'frac.': explained_variance,
