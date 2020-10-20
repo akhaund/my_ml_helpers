@@ -55,11 +55,12 @@ class DoPCA:
         """
         Visualize data along 2 or 3 principal components.
         """
-        pca_components = pd.DataFrame(
-            data=self._pca.components_[:, :n_comp],
+        pca_components = \
+            pd.DataFrame(data=self._pca.components_[:, :n_comp],
                          index=features,
                          columns=['PC' + str(i+1) for i in range(n_comp)])
-        pca_transformed = pd.DataFrame(
+        pca_transformed = \
+            pd.DataFrame(
                 data=np.concatenate((self._pca.transform(dat)[:, :n_comp],
                                      labels.reshape(len(labels), 1),
                                      indeces.reshape(len(indeces), 1)),
