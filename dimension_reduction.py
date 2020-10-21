@@ -104,9 +104,6 @@ class DoPCA:
 
 class DoLDA:
 
-    """
-    """
-
     def __init__(self) -> None:
         pass
 
