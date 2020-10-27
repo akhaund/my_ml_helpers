@@ -36,8 +36,13 @@ class DoPCA:
         """
         expl_var = pd.Series(self._pca.explained_variance_ratio_.cumsum())
         expl_var.index += 1
-        fig = px.bar(expl_var)
-        fig.update_layout(bargap=0,
+        expl_var = expl_var.to_frame().reset_index()
+        expl_var.columns = ['component rank', 'cumul. exp. var']
+        fig = px.bar(data_frame=expl_var,
+                     x='component rank',
+                     y='cumul. exp. var')
+        fig.update_layout(template='plotly_dark',
+                          bargap=0,
                           showlegend=False,
                           xaxis={'title': 'Principal Component rank'},
                           yaxis={'title': 'Variance Explained (cumul. %)',
@@ -167,3 +172,9 @@ def do_mca(df,
     if save_plot is not None:
         save_plot(fig, 'mca_variance')
     return G
+
+
+if __name__ == '__main__':
+
+    from sklearn import datasets
+    iris = datasets.load_iris()
