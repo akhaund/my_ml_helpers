@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -14,7 +15,7 @@ class DoPCA:
 
     def __init__(self, dat,
                  features=None, labels=None, indeces=None,  # for vizualize()
-                 n_components: int = 2,
+                 n_components: int = 2,  # ? Can input control be done here
                  scale: int = 5,  # for visibility of feature axes projections
                  mode: str = None,
                  feature_projections: bool = False,
@@ -63,6 +64,10 @@ class DoPCA:
         # input checks
         if indeces is None:
             indeces = np.array(range(1, len(labels) + 1))
+        if n_comp not in [2, 3]:
+            print('\033[1m' + 'Input Error' + '\033[0m' + '\n' +
+                  'n_components must be 2 or 3')
+            sys.exit()  # !: Find a better way
         pca_components = \
             pd.DataFrame(data=self._pca.components_[:n_comp, :].T,
                          index=features,
@@ -83,7 +88,7 @@ class DoPCA:
             axes = dict(zip(('x', 'y', 'z'), pca_components.columns))
         hover_data = dict.fromkeys(pca_components.columns, False)
         hover_data.update(dict(label=True, idx=True))
-        fig = plotter(pca_transformed,
+        fig = plotter(pca_transformed,  # ? What is this
                       **axes,
                       color='label',
                       hover_data=hover_data,
@@ -189,16 +194,16 @@ if __name__ == '__main__':
                    .replace(dict(zip(np.unique(iris.target),
                                      iris.target_names)))
                    .values)
-
+    # 2D visualization
     DoPCA(iris.data, iris.feature_names, iris.target,
           mode='visualize',
           feature_projections=True,
-          n_components=2,
+          n_components=4,
           scale=2)
-
+    # 3D visualization
     DoPCA(iris.data, iris.feature_names, iris.target,
           mode='visualize',
           feature_projections=True,
           n_components=3)
-
+    # Explained variance
     DoPCA(iris.data)
