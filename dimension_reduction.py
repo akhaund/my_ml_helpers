@@ -193,5 +193,12 @@ if __name__ == '__main__':
     DoPCA(iris.data, iris.feature_names, iris.target,
           mode='visualize',
           feature_projections=True,
-          n_components=3,
-          scale=3)
+          n_components=2,
+          scale=2)
+
+    DoPCA(iris.data, iris.feature_names, iris.target,
+          mode='visualize',
+          feature_projections=True,
+          n_components=3)
+
+    DoPCA(iris.data)
