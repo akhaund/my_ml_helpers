@@ -47,7 +47,7 @@ class DoPCA:
                           xaxis={'title': 'Principal Component rank'},
                           yaxis={'title': 'Variance Explained (cumul. %)',
                                  'tickformat': ',.1%'},
-                          title='Variance explained by Principal components')
+                          title='Variance explained by Principal Components')
         if save_plot is not None:
             save_plot(fig, 'pca_variance')
         if show_plot:
@@ -60,7 +60,7 @@ class DoPCA:
         """
         Visualize data along 2 or 3 principal components.
         """
-        # input completion
+        # input checks
         if indeces is None:
             indeces = np.array(range(1, len(labels) + 1))
         pca_components = \
@@ -86,7 +86,6 @@ class DoPCA:
         fig = plotter(pca_transformed,
                       **axes,
                       color='label',
-                      color_discrete_sequence=px.colors.qualitative.G10,
                       hover_data=hover_data,
                       title='Principal Component Analysis',
                       template='plotly_dark')
@@ -98,8 +97,8 @@ class DoPCA:
                               x0=0, y0=0,
                               x1=pca_components.iloc[i, 0],
                               y1=pca_components.iloc[i, 1],
-                              line=dict(color='LightSeaGreen',
-                                        width=2))
+                              line=dict(color='antiquewhite',
+                                        width=1))
                 fig.add_annotation(x=pca_components.iloc[i, 0],
                                    y=pca_components.iloc[i, 1],
                                    text=v,
@@ -179,9 +178,12 @@ def do_mca(df,
     return G
 
 
+# Test
 if __name__ == '__main__':
 
     from sklearn import datasets
+
+    # test PCA
     iris = datasets.load_iris()
     iris.target = (pd.Series(iris.target)
                    .replace(dict(zip(np.unique(iris.target),
@@ -191,4 +193,5 @@ if __name__ == '__main__':
     DoPCA(iris.data, iris.feature_names, iris.target,
           mode='visualize',
           feature_projections=True,
-          scale=2)
+          n_components=3,
+          scale=3)
