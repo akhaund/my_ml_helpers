@@ -14,6 +14,8 @@ from sklearn.feature_selection import mutual_info_classif
 
 class DoPCA:
 
+    """ Principal Component Analysis """
+
     def __init__(self, dat,
                  features=None, labels=None, indeces=None,  # for vizualize()
                  n_components: int = 2,  # ? Can input be checked here
@@ -130,6 +132,16 @@ class DoPCA:
 
 
 class DoLDA:
+
+    """ Linear Discriminant Analysis """
+
+    def __init__(self) -> None:
+        pass
+
+
+class DoMCA:
+
+    """ Multiple Correspondence Analysis """
 
     def __init__(self) -> None:
         pass
