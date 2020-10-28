@@ -61,7 +61,7 @@ class DoPCA:
         Visualize data along 2 or 3 principal components.
         """
         pca_components = \
-            pd.DataFrame(data=self._pca.components_[:, :n_comp],
+            pd.DataFrame(data=self._pca.components_[:n_comp, :].T,
                          index=features,
                          columns=['PC' + str(i+1) for i in range(n_comp)])
         pca_transformed = \
@@ -178,3 +178,6 @@ if __name__ == '__main__':
 
     from sklearn import datasets
     iris = datasets.load_iris()
+
+    DoPCA(iris.data, iris.feature_names, np.array(
+        range(150)), iris.target, mode='visualize', feature_projections=True, scale=2)
