@@ -4,6 +4,7 @@ import sys
 import numpy as np
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 
 from scipy.linalg import svd
 from sklearn.preprocessing import StandardScaler
@@ -15,7 +16,7 @@ class DoPCA:
 
     def __init__(self, dat,
                  features=None, labels=None, indeces=None,  # for vizualize()
-                 n_components: int = 2,  # ? Can input control be done here
+                 n_components: int = 2,  # ? Can input be checked here
                  scale: int = 5,  # for visibility of feature axes projections
                  mode: str = None,
                  feature_projections: bool = False,
@@ -35,20 +36,32 @@ class DoPCA:
         """
         Can be used as a feature-space reduction step before model training.
         """
-        expl_var = pd.Series(self._pca.explained_variance_ratio_.cumsum())
+
+        expl_var = pd.DataFrame({
+            'var_exp': self._pca.explained_variance_ratio_,
+            'cumul_var_exp': self._pca.explained_variance_ratio_.cumsum()
+        })
         expl_var.index += 1
-        expl_var = expl_var.to_frame().reset_index()
-        expl_var.columns = ['component rank', 'cumul. exp. var']
-        fig = px.bar(data_frame=expl_var,
-                     x='component rank',
-                     y='cumul. exp. var')
-        fig.update_layout(template='plotly_dark',
-                          bargap=0,
-                          showlegend=False,
-                          xaxis={'title': 'Principal Component rank'},
-                          yaxis={'title': 'Variance Explained (cumul. %)',
-                                 'tickformat': ',.1%'},
-                          title='Variance explained by Principal Components')
+
+        trace1 = dict(type='bar',
+                      x=expl_var.index,
+                      y=expl_var['var_exp'])
+        trace2 = dict(type='scatter',
+                      x=expl_var.index,
+                      y=expl_var['cumul_var_exp'],
+                      line=dict(color='#dadbb2'))
+        traces = [trace1, trace2]
+
+        layout = go.Layout(showlegend=False,
+                           template='plotly_dark',
+                           xaxis={'title': 'Principal Component rank'},
+                           yaxis=dict(title='Variance Explained',
+                                      tickformat=',.1%',
+                                      gridcolor='#828994'),
+                           title='Variance explained by Principal Components')
+
+        fig = go.Figure(traces, layout)
+
         if save_plot is not None:
             save_plot(fig, 'pca_variance')
         if show_plot:
@@ -97,7 +110,7 @@ class DoPCA:
         # Components of features
         if n_comp == 2 and feature_projections:
             pca_components *= scale
-            for i, v in enumerate(pca_components.index):
+            for i, val in enumerate(pca_components.index):
                 fig.add_shape(type='line',
                               x0=0, y0=0,
                               x1=pca_components.iloc[i, 0],
@@ -106,7 +119,7 @@ class DoPCA:
                                         width=1))
                 fig.add_annotation(x=pca_components.iloc[i, 0],
                                    y=pca_components.iloc[i, 1],
-                                   text=v,
+                                   text=val,
                                    showarrow=True,
                                    arrowsize=2,
                                    arrowhead=2)
@@ -198,7 +211,7 @@ if __name__ == '__main__':
     DoPCA(iris.data, iris.feature_names, iris.target,
           mode='visualize',
           feature_projections=True,
-          n_components=4,
+          n_components=2,
           scale=2)
     # 3D visualization
     DoPCA(iris.data, iris.feature_names, iris.target,
