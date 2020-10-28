@@ -12,6 +12,10 @@ from sklearn.decomposition import PCA
 from sklearn.feature_selection import mutual_info_classif
 
 
+def explained_variance_plot():
+    pass
+
+
 class DoPCA:
 
     """ Principal Component Analysis """
