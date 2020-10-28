@@ -13,7 +13,7 @@ from sklearn.feature_selection import mutual_info_classif
 class DoPCA:
 
     def __init__(self, dat,
-                 features=None, indeces=None, labels=None,  # for vizualize()
+                 features=None, labels=None, indeces=None,  # for vizualize()
                  n_components: int = 2,
                  scale: int = 5,  # for visibility of feature axes projections
                  mode: str = None,
@@ -60,6 +60,9 @@ class DoPCA:
         """
         Visualize data along 2 or 3 principal components.
         """
+        # input completion
+        if indeces is None:
+            indeces = np.array(range(1, len(labels) + 1))
         pca_components = \
             pd.DataFrame(data=self._pca.components_[:n_comp, :].T,
                          index=features,
@@ -70,7 +73,7 @@ class DoPCA:
                                      labels.reshape(len(labels), 1),
                                      indeces.reshape(len(indeces), 1)),
                                     axis=1),
-                columns=list(pca_components.columns) + ['label', 'id'])
+                columns=list(pca_components.columns) + ['label', 'idx'])
         # Plotting
         if n_comp == 2:
             plotter = px.scatter
@@ -79,13 +82,14 @@ class DoPCA:
             plotter = px.scatter_3d
             axes = dict(zip(('x', 'y', 'z'), pca_components.columns))
         hover_data = dict.fromkeys(pca_components.columns, False)
-        hover_data.update(dict(label=True, id=True))
+        hover_data.update(dict(label=True, idx=True))
         fig = plotter(pca_transformed,
                       **axes,
                       color='label',
                       color_discrete_sequence=px.colors.qualitative.G10,
                       hover_data=hover_data,
-                      title='Principal Component Analysis')
+                      title='Principal Component Analysis',
+                      template='plotly_dark')
         # Components of features
         if n_comp == 2 and feature_projections:
             pca_components *= scale
@@ -100,7 +104,8 @@ class DoPCA:
                                    y=pca_components.iloc[i, 1],
                                    text=v,
                                    showarrow=True,
-                                   arrowhead=7)
+                                   arrowsize=2,
+                                   arrowhead=2)
         if show_plot:
             fig.show()
         if save_plot is not None:
@@ -178,6 +183,12 @@ if __name__ == '__main__':
 
     from sklearn import datasets
     iris = datasets.load_iris()
+    iris.target = (pd.Series(iris.target)
+                   .replace(dict(zip(np.unique(iris.target),
+                                     iris.target_names)))
+                   .values)
 
-    DoPCA(iris.data, iris.feature_names, np.array(
-        range(150)), iris.target, mode='visualize', feature_projections=True, scale=2)
+    DoPCA(iris.data, iris.feature_names, iris.target,
+          mode='visualize',
+          feature_projections=True,
+          scale=2)
