@@ -12,64 +12,78 @@ from sklearn.decomposition import PCA
 from sklearn.feature_selection import mutual_info_classif
 
 
-def explained_variance_plot(arr):
-    """
-    A Pareto Chart for variance explained by components of PCA, MCA
-    """
-    trace1 = dict(type='bar',
-                  x=arr.index,
-                  y=arr['var_exp'])
-    trace2 = dict(type='scatter',
-                  x=arr.index,
-                  y=arr['cumul_var_exp'],
-                  line=dict(color='#dadbb2'))
-    traces = [trace1, trace2]
-    layout = go.Layout(showlegend=False,
-                       template='plotly_dark',
-                       xaxis=dict(title='Principal Component rank'),
-                       yaxis=dict(title='Variance Explained',
-                                  tickformat=',.1%',
-                                  gridcolor='#828994'),
-                       title='Variance explained by Principal Components')
-    return go.Figure(traces, layout)
+class Plotters:
 
+    def explained_variance_plot(arr):
+        """
+        A Pareto Chart for variance explained by components of PCA, MCA
+        """
+        trace1 = dict(
+            type='bar',
+            x=arr.index,
+            y=arr['var_exp']
+        )
+        trace2 = dict(
+            type='scatter',
+            x=arr.index,
+            y=arr['cumul_var_exp'],
+            line=dict(color='#dadbb2')
+        )
+        traces = [trace1, trace2]
+        layout = go.Layout(
+            showlegend=False,
+            template='plotly_dark',
+            xaxis=dict(title='Principal Component rank'),
+            yaxis=dict(title='Variance Explained',
+                       tickformat=',.1%',
+                       gridcolor='#828994'),
+            title='Variance explained by Principal Components'
+        )
+        return go.Figure(traces, layout)
 
-def low_dimensional_projections(n_comp, components, transforms,
-                                feature_projections, scale):
-    """
-    2d/3d projections from PCA/MCA
-    """
-    if n_comp == 2:
-        plotter = px.scatter
-        axes = dict(zip(('x', 'y'), components.columns))
-    elif n_comp == 3:
-        plotter = px.scatter_3d
-        axes = dict(zip(('x', 'y', 'z'), components.columns))
-    hover_data = dict.fromkeys(components.columns, False)
-    hover_data.update(dict(label=True, idx=True))
-    fig = plotter(transforms,  # ? What is this
-                  **axes,
-                  color='label',
-                  hover_data=hover_data,
-                  title='Principal Component Analysis',
-                  template='plotly_dark')
-    # Components of features
-    if n_comp == 2 and feature_projections:
-        components *= scale
-        for i, val in enumerate(components.index):
-            fig.add_shape(type='line',
-                          x0=0, y0=0,
-                          x1=components.iloc[i, 0],
-                          y1=components.iloc[i, 1],
-                          line=dict(color='antiquewhite',
-                                    width=1))
-            fig.add_annotation(x=components.iloc[i, 0],
-                               y=components.iloc[i, 1],
-                               text=val,
-                               showarrow=True,
-                               arrowsize=2,
-                               arrowhead=2)
-    return fig
+    def low_dimensional_projections(n_comp, components, transforms,
+                                    feature_projections, scale):
+        """
+        2d/3d projections from PCA/MCA
+        """
+        if n_comp == 2:
+            plotter = px.scatter
+            axes = dict(zip(('x', 'y'), components.columns))
+        elif n_comp == 3:
+            plotter = px.scatter_3d
+            axes = dict(zip(('x', 'y', 'z'), components.columns))
+        # edit hover data
+        hover_data = dict.fromkeys(components.columns, False)
+        hover_data.update(dict(label=True, idx=True))
+        fig = plotter(
+            transforms,  # ? What is this
+            **axes,
+            color='label',
+            hover_data=hover_data,
+            title='Principal Component Analysis',
+            template='plotly_dark'
+        )
+        # Projections of features
+        if n_comp == 2 and feature_projections:
+            components *= scale
+            for i, val in enumerate(components.index):
+                fig.add_shape(
+                    type='line',
+                    x0=0, y0=0,
+                    x1=components.iloc[i, 0],
+                    y1=components.iloc[i, 1],
+                    line=dict(color='#dadbb2',
+                              width=1)
+                )
+                fig.add_annotation(
+                    x=components.iloc[i, 0],
+                    y=components.iloc[i, 1],
+                    text=val,
+                    showarrow=True,
+                    arrowsize=2,
+                    arrowhead=2
+                )
+        return fig
 
 
 class DoPCA:
@@ -95,7 +109,7 @@ class DoPCA:
         })
         expl_var.index += 1
 
-        fig = explained_variance_plot(expl_var)
+        fig = Plotters.explained_variance_plot(expl_var)
 
         if save_plot is not None:
             save_plot(fig, 'pca_variance')
@@ -134,11 +148,11 @@ class DoPCA:
         )
 
         # Plotting
-        fig = low_dimensional_projections(n,
-                                          pca_components,
-                                          pca_transformed,
-                                          feature_projections,
-                                          scale)
+        fig = Plotters.low_dimensional_projections(n,
+                                                   pca_components,
+                                                   pca_transformed,
+                                                   feature_projections,
+                                                   scale)
 
         if show_plot:
             fig.show()
@@ -224,7 +238,7 @@ def do_mca(df,
 
 
 # Test
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     from sklearn import datasets
 
@@ -242,7 +256,6 @@ if __name__ == '__main__':
                                scale=2)
     # 3D visualization
     DoPCA(iris.data).vizualize(labels=iris.target,
-                               n_components=3,
-                               scale=2)
+                               n_components=3)
     # # Explained variance
     DoPCA(iris.data).explained_variance()
