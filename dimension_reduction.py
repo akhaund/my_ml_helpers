@@ -55,14 +55,12 @@ class Plotters:
         # edit hover data
         hover_data = dict.fromkeys(components.columns, False)
         hover_data.update(dict(label=True, idx=True))
-        fig = plotter(
-            transforms,  # ? What is this
-            **axes,
-            color='label',
-            hover_data=hover_data,
-            title='Principal Component Analysis',
-            template='plotly_dark'
-        )
+        fig = plotter(transforms,  # ? What is this
+                      **axes,
+                      color='label',
+                      hover_data=hover_data,
+                      title='Principal Component Analysis',
+                      template='plotly_dark')
         # Projections of features
         if n_comp == 2 and feature_projections:
             components *= scale
@@ -130,10 +128,11 @@ class DoPCA:
         indeces = self._df.index.values
         n = n_components
         # input checks
-        if n_components not in [2, 3]:
-            print('\033[1m' + 'Input Error' + '\033[0m' + '\n' +
-                  'n_components must be 2 or 3')
-            sys.exit()  # !: Find a better way
+        if n_components not in {2, 3}:
+            print('\033[1m Input Error for "visualize" \033[0m' +
+                  '\n n_components must be 2 or 3 \n',
+                  file=sys.stderr)
+            return
         pca_components = pd.DataFrame(
             data=self._pca.components_[:n, :].T,
             index=features,
@@ -200,9 +199,11 @@ class DoMCA:
         G = D_c_sqrt @ Q @ np.diag(S)
 
         eig_vals = S ** 2
-        expl_var = eig_vals / eig_vals.sum()
-        expl_var = pd.DataFrame({'frac.': expl_var,
-                                 'cumul. frac.': expl_var.cumsum()})
+        expl_var_ratio = eig_vals / eig_vals.sum()
+        expl_var = pd.DataFrame({
+            'var_exp': expl_var_ratio,
+            'cumul_var_exp': expl_var_ratio.cumsum()
+        })
 
         fig = Plotters.explained_variance_plot(expl_var)
 
@@ -247,10 +248,9 @@ if __name__ == "__main__":
                              columns=iris.feature_names)
     # 2D visualization
     DoPCA(iris.data).vizualize(labels=iris.target,
-                               n_components=2,
                                scale=2)
     # 3D visualization
     DoPCA(iris.data).vizualize(labels=iris.target,
-                               n_components=3)
+                               n_components=14)
     # # Explained variance
     DoPCA(iris.data).explained_variance()
