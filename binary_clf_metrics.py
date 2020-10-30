@@ -11,8 +11,7 @@ import helpers as hp
 def get_metrics(y_truth, y_pred,
                 positive: int = 1,
                 increment: float = 0.005):
-    """
-    """
+    """ Get cross validation metrics for model selection """
     precision = len(str(increment).split(".")[1])  # Has to be a better way
     thresholds = [round(i, precision) for i in np.arange(0.0, 1.0, increment)]
     negative = 1 - positive

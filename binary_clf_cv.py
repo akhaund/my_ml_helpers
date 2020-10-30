@@ -7,7 +7,7 @@ import helpers as hp
 import binary_clf_metrics as metrics
 
 
-class Splitter:
+class CVSplitter:
     """ Creates an instance of the data splitter for CV """
 
     def __init__(self, strategy, split_param):
@@ -18,18 +18,18 @@ class Splitter:
         self._splitter.__dict__.update(split_param)
 
 
-def cross_validation(splitting_strategy: str = "StratifiedKFold",
-                     splitter_parameters: dict = None,
-                     clfs: dict = None,
-                     x_train=None,
-                     y_train=None,
-                     threshold_increment: float = 0.005,
-                     positive: int = 1):
+def do_cross_validation(splitting_strategy: str = "StratifiedKFold",
+                        splitter_parameters: dict = None,
+                        clfs: dict = None,
+                        x_train=None,
+                        y_train=None,
+                        threshold_increment: float = 0.005,
+                        positive: int = 1):
     """
     Returns cross_validation metrics over different thresholds,
     for all candidate classifiers.
     """
-    splitter = Splitter(splitting_strategy, splitter_parameters)
+    splitter = CVSplitter(splitting_strategy, splitter_parameters)
     split_maker = namedtuple("split_set", ["data", "label"])
     #  auc_roc, precision, sensitivity, specificity for each fold
     auc, pr, sn, sp = hp.lists(4)
