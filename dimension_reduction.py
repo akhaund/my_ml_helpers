@@ -15,7 +15,8 @@ from sklearn.feature_selection import mutual_info_classif
 class Plotters:
     """ Generate dimension reduction plots """
     def explained_variance_plot(arr):
-        """ 'Variance Explained' by PCA/MCA components """
+        """ 'Variance Explained' by PCA/MCA components
+        """
         trace1 = dict(
             type="bar",
             x=arr.index,
@@ -38,7 +39,8 @@ class Plotters:
 
     def low_dimensional_projection(n_comp, components, transforms,
                                    feature_projections, scale):
-        """ 2d/3d projections from PCA/MCA """
+        """ 2d/3d projections from PCA/MCA
+        """
         if n_comp == 2:
             plotter = px.scatter
             axes = dict(zip(("x", "y"), components.columns))
@@ -48,8 +50,8 @@ class Plotters:
         # edit hover data
         hover_data = dict.fromkeys(components.columns, False)
         hover_data.update(dict(label=True, idx=True))
-        fig = plotter(
-            transforms,  # ? What is this
+        fig = plotter(  # ? What is this warning from Pylance
+            transforms,
             **axes,
             color="label",
             hover_data=hover_data,
@@ -80,21 +82,23 @@ class DoPCA:
     """ Principal Component Analysis """
 
     def __init__(self, df: pd.DataFrame) -> None:
-        x = StandardScaler().fit_transform(df.values)
-        df = pd.DataFrame(data=x, columns=df.columns)
+        # Prior to PCA, data columns should be standardized
+        df = pd.DataFrame(data=StandardScaler().fit_transform(df.values),
+                          columns=df.columns)
         self._df = df
         self._pca = PCA().fit(df.values)
 
     def explained_variance(self,
                            show_plot: bool = True,
                            save_plot=None) -> None:
-        """For feature-space reduction step before model training"""
-        expl_var = pd.DataFrame(
-            {"var_exp": self._pca.explained_variance_ratio_,
-             "cumul_var_exp": self._pca.explained_variance_ratio_.cumsum()})
+        """For feature-space reduction step before model training
+        """
+        expl_var = pd.DataFrame({
+            "var_exp": self._pca.explained_variance_ratio_,
+            "cumul_var_exp": self._pca.explained_variance_ratio_.cumsum()})
         expl_var.index += 1
 
-        # plotting
+        # Plotting
         fig = Plotters.explained_variance_plot(expl_var)
         if save_plot is not None:
             save_plot(fig, "pca_variance")
@@ -108,24 +112,27 @@ class DoPCA:
                   feature_projections: bool = True,
                   show_plot: bool = True,
                   save_plot=None) -> None:
-        """ Visualize data along 2 or 3 principal components """
+        """ Visualize data along 2 or 3 principal components
+        """
         features, indeces = self._df.columns, self._df.index.values
         n = n_components
         # input checks
         if n_components not in {2, 3}:
-            print("\033[1m Input Error for 'visualize' \033[0m"
-                  "\n n_components must be 2 or 3 \n",
+            print("\033[1m"
+                  "Input Error for 'visualize' function. \n"
+                  "\033[0m"
+                  f"Given: {n_components=}. It must be 2 or 3. \n",
                   file=sys.stderr)
             return
         pca_components = pd.DataFrame(
-            data=self._pca.components_[:n, :].T,
+            data=self._pca.components_[:n, :].T,  # Components are as rows
             index=features,
             columns=["PC" + str(i + 1) for i in range(n)])
         pca_transformed = pd.DataFrame(
             data=np.concatenate(
                 (self._pca.transform(self._df.values)[:, :n],
                  labels.reshape(len(labels), 1),
-                 indeces.reshape(len(indeces), 1),),
+                 indeces.reshape(len(indeces), 1)),
                 axis=1),
             columns=list(pca_components.columns) + ["label", "idx"])
 
@@ -179,10 +186,11 @@ class DoMCA:
 
         eig_vals = S ** 2
         expl_var_ratio = eig_vals / eig_vals.sum()
-        expl_var = pd.DataFrame(
-            {"var_exp": expl_var_ratio,
-             "cumul_var_exp": expl_var_ratio.cumsum()})
+        expl_var = pd.DataFrame({
+            "var_exp": expl_var_ratio,
+            "cumul_var_exp": expl_var_ratio.cumsum()})
 
+        # Plotting
         fig = Plotters.explained_variance_plot(expl_var)
         if show_plot:
             fig.show()
@@ -194,8 +202,7 @@ class DoMCA:
 def get_mutual_info(df, labels, discretes,
                     save_plot=None,
                     show_plot: bool = True):
-    """
-    Mutual Information
+    """ Mutual Information
     """
     mi = pd.Series(mutual_info_classif(df,
                                        labels,
@@ -234,6 +241,6 @@ if __name__ == "__main__":
     # 3D visualization
     DoPCA(iris.data).vizualize(
         labels=iris.target,
-        n_components=3)
+        n_components=14)
     # Explained variance
     DoPCA(iris.data).explained_variance()
