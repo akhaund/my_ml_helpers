@@ -149,7 +149,7 @@ class DoLDA:
 
 
 class DoMCA:
-    """ Multiple Correspondence Analysis """
+    """ Multiple Correspondence Analysis (under construction) """
 
     def __init__(self) -> None:
         pass
