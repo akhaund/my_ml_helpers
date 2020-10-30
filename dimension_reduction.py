@@ -36,8 +36,8 @@ class Plotters:
             title="Variance explained by Principal Components")
         return go.Figure(traces, layout)
 
-    def low_dimensional_projections(n_comp, components, transforms,
-                                    feature_projections, scale):
+    def low_dimensional_projection(n_comp, components, transforms,
+                                   feature_projections, scale):
         """ 2d/3d projections from PCA/MCA """
         if n_comp == 2:
             plotter = px.scatter
@@ -130,11 +130,11 @@ class DoPCA:
             columns=list(pca_components.columns) + ["label", "idx"])
 
         # Plotting
-        fig = Plotters.low_dimensional_projections(n,
-                                                   pca_components,
-                                                   pca_transformed,
-                                                   feature_projections,
-                                                   scale)
+        fig = Plotters.low_dimensional_projection(n,
+                                                  pca_components,
+                                                  pca_transformed,
+                                                  feature_projections,
+                                                  scale)
         if show_plot:
             fig.show()
         if save_plot is not None:
