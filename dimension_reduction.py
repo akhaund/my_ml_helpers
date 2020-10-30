@@ -15,7 +15,7 @@ from sklearn.feature_selection import mutual_info_classif
 class Plotters:
     """ Generate dimension reduction plots """
     def explained_variance_plot(arr):
-        """ Pareto Chart for variance explained by PCA/MCA components """
+        """ 'Variance Explained' by PCA/MCA components """
         trace1 = dict(
             type="bar",
             x=arr.index,
@@ -197,11 +197,10 @@ def get_mutual_info(df, labels, discretes,
     """
     Mutual Information
     """
-    mi = pd.Series(
-        mutual_info_classif(df,
-                            labels,
-                            discrete_features=discretes),
-        index=df.columns).sort_values(ascending=False)
+    mi = pd.Series(mutual_info_classif(df,
+                                       labels,
+                                       discrete_features=discretes),
+                   index=df.columns).sort_values(ascending=False)
     fig = px.line(y=mi)
     fig.update_layout(
         xaxis={"title": "feature rank"},

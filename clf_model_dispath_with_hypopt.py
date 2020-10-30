@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 
-from sklearn import ensemble
-from sklearn import linear_model
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.model_selection import GridSearchCV
 
 
 class BestClassifierInstance:
-    """
-    Creates a hyperparameter tuned instance of the classifier.
-    """
+    """ Hyperparameter tuned instance of the classifier """
 
     def __init__(self, default, grid_param, X, y, metric) -> None:
         self._config = default
@@ -24,7 +23,7 @@ class BestClassifierInstance:
 
 def classifier_candidates(hp_tuning: bool = False,
                           random_seed: int = 123,
-                          hp_tune_metric: str = 'f1',
+                          hp_tune_metric: str = "f1",
                           x_train=None,
                           y_train=None):
     """
@@ -33,33 +32,28 @@ def classifier_candidates(hp_tuning: bool = False,
     """
     if hp_tuning:
         classifiers = {
-            'Logistic Regression': (
-                linear_model.LogisticRegression,
+            "Logistic Regression": (
+                LogisticRegression,
                 {
-                    'C': [0.01, 0.1, 1, 10, 100],
-                    'penalty': ['elasticnet'],
-                    'solver': ['saga'],
-                    'l1_ratio': [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
-                    'random_state': [random_seed]
-                }
-            ),
-
-            'Random Forest': (
-                ensemble.RandomForestClassifier,
+                    "C": [0.01, 0.1, 1, 10, 100],
+                    "penalty": ["elasticnet"],
+                    "solver": ["saga"],
+                    "l1_ratio": [0.0, 0.2, 0.4, 0.6, 0.8, 1.0],
+                    "random_state": [random_seed]
+                }),
+            "Random Forest": (
+                RandomForestClassifier,
                 {
-                    'n_estimators': [100, 200],
-                    'random_state': [random_seed]
-                }
-            ),
-
-            'Grad. Bstd. Tree Clf': (
-                ensemble.GradientBoostingClassifier,
+                    "n_estimators": [100, 200],
+                    "random_state": [random_seed]
+                }),
+            "Grad. Bstd. Tree Clf": (
+                GradientBoostingClassifier,
                 {
-                    'n_estimators': [100, 200],
-                    'loss': ['deviance', 'exponential'],
-                    'random_state': [random_seed]
-                }
-            )
+                    "n_estimators": [100, 200],
+                    "loss": ["deviance", "exponential"],
+                    "random_state": [random_seed]
+                })
         }
         for key, value in classifiers.items():
             clf, param_grid = value
@@ -72,22 +66,20 @@ def classifier_candidates(hp_tuning: bool = False,
 
     else:
         classifiers = {
-            'Logistic Regression':
-            linear_model.LogisticRegression(penalty='l1',
-                                            solver='liblinear',
-                                            random_state=random_seed),
-
-            'Random Forest':
-            ensemble.RandomForestClassifier(random_state=random_seed),
-
-            'Grad. Bstd. Tree Clf':
-            ensemble.GradientBoostingClassifier(random_state=random_seed)
+            "Logistic Regression":
+            LogisticRegression(penalty="l1",
+                               solver="liblinear",
+                               random_state=random_seed),
+            "Random Forest Clf.":
+            RandomForestClassifier(random_state=random_seed),
+            "Grad. Bstd. Tree Clf.":
+            GradientBoostingClassifier(random_state=random_seed)
         }
     return classifiers
 
 
 # test
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     from sklearn import datasets
 
@@ -96,6 +88,6 @@ if __name__ == '__main__':
 
     clfs = classifier_candidates(hp_tuning=True,
                                  random_seed=123,
-                                 hp_tune_metric='f1_macro',
+                                 hp_tune_metric="f1_macro",
                                  x_train=data,
                                  y_train=label)
