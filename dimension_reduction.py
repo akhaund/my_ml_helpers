@@ -78,7 +78,7 @@ class Plotters:
         return fig
 
 
-class DoPCA:
+class OutputPCA:
     """ Principal Component Analysis """
 
     def __init__(self, df: pd.DataFrame) -> None:
@@ -148,14 +148,14 @@ class DoPCA:
             save_plot(fig, f"pca_view_{n}d")
 
 
-class DoLDA:
+class OutputLDA:
     """ Linear Discriminant Analysis """
 
     def __init__(self) -> None:
         pass
 
 
-class DoMCA:
+class OutputMCA:
     """ Multiple Correspondence Analysis (under construction) """
 
     def __init__(self) -> None:
@@ -235,12 +235,12 @@ if __name__ == "__main__":
         data=iris.data,
         columns=iris.feature_names)
     # 2D visualization
-    DoPCA(iris.data).vizualize(
+    OutputPCA(iris.data).vizualize(
         labels=iris.target,
         scale=2)
     # 3D visualization
-    DoPCA(iris.data).vizualize(
+    OutputPCA(iris.data).vizualize(
         labels=iris.target,
-        n_components=14)
+        n_components=3)
     # Explained variance
-    DoPCA(iris.data).explained_variance()
+    OutputPCA(iris.data).explained_variance()
