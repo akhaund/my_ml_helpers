@@ -82,7 +82,7 @@ class OutputPCA:
     """ Principal Component Analysis """
 
     def __init__(self, df: pd.DataFrame) -> None:
-        # Prior to PCA, data columns should be standardized
+        # Data columns being standardized prior to PCA
         df = pd.DataFrame(data=StandardScaler().fit_transform(df.values),
                           columns=df.columns)
         self._df = df
