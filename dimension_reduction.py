@@ -84,7 +84,8 @@ class OutputPCA:
     def __init__(self, df: pd.DataFrame) -> None:
         # Prior to PCA, data columns should be standardized
         df = pd.DataFrame(data=StandardScaler().fit_transform(df.values),
-                          columns=df.columns)
+                          columns=df.columns,
+                          index=df.index)
         self._df = df
         self._pca = PCA().fit(df.values)
 
