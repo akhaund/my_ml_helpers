@@ -1,4 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
+# Author: Anshuman Khaund <ansh.khaund@gmail.com>
 
 from collections import namedtuple
 from sklearn import model_selection
