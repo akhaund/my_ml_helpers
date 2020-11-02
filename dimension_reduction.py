@@ -1,4 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
+# Author: Anshuman Khaund <ansh.khaund@gmail.com>
 
 import sys
 import numpy as np
