@@ -40,7 +40,7 @@ class Plotters:
         return go.Figure(traces, layout)
 
     def low_dimensional_projection(n_comp, components, transforms,
-                                   feature_projections, scale):
+                                   project_features, scale_features):
         """ 2d/3d projections from PCA/MCA
         """
         if n_comp == 2:
@@ -60,8 +60,8 @@ class Plotters:
             title="Principal Component Analysis",
             template="plotly_dark")
         # Projections of features
-        if n_comp == 2 and feature_projections:
-            components *= scale
+        if n_comp == 2 and project_features:
+            components *= scale_features
             for i, val in enumerate(components.index):
                 fig.add_shape(
                     type="line",
@@ -111,7 +111,7 @@ class OutputPCA:
     def vizualize(self,
                   labels,
                   n_components: int = 2,
-                  scale: int = 5,
+                  feature_scale: int = 5,
                   feature_projections: bool = True,
                   show_plot: bool = True,
                   save_plot=None) -> None:
@@ -144,7 +144,7 @@ class OutputPCA:
                                                   pca_components,
                                                   pca_transformed,
                                                   feature_projections,
-                                                  scale)
+                                                  feature_scale)
         if show_plot:
             fig.show()
         if save_plot is not None:
@@ -240,7 +240,7 @@ if __name__ == "__main__":
     # 2D visualization
     OutputPCA(iris.data).vizualize(
         labels=iris.target,
-        scale=2)
+        feature_scale=2)
     # 3D visualization
     OutputPCA(iris.data).vizualize(
         labels=iris.target,
