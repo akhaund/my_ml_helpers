@@ -13,9 +13,9 @@ class BestClassifierInstance:
 
     def __init__(self, default, grid_param, X, y, metric) -> None:
         self._config = default
-        self.best_config(default, grid_param, X, y, metric)
+        self._best_config(default, grid_param, X, y, metric)
 
-    def best_config(self, clf, grid, data, target, metric):
+    def _best_config(self, clf, grid, data, target, metric):
         gs = GridSearchCV(estimator=clf,
                           param_grid=grid,
                           scoring=metric)
