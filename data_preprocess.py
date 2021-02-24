@@ -37,6 +37,7 @@ def reduce_memory_usage(df, verbose=True):
     return df
 
 def to_categoricals(df):
+    """ Converts all columns to categorical data """
     for col in df:
         df[col] = df[col].astype(cat_d(
             categories=df[col].unique(),
