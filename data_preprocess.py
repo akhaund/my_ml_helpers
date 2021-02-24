@@ -3,6 +3,7 @@
 # Author: Anshuman Khaund <ansh.khaund@gmail.com>
 
 import numpy as np
+from pandas.api.types import CategoricalDtype as cat_d
 
 
 def reduce_memory_usage(df, verbose=True):
@@ -33,4 +34,12 @@ def reduce_memory_usage(df, verbose=True):
         print("Memory usage decreased from "
               f"{start_memory:.2f} Mb to {end_memory:.2f} Mb, "
               f"({1 - (end_memory / start_memory):.1%} reduction).")
+    return df
+
+def to_categoricals(df):
+    for col in df:
+        df[col] = df[col].astype(cat_d(
+            categories=df[col].unique(),
+            ordered=True,
+        ))
     return df
