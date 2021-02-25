@@ -3,7 +3,7 @@
 # Author: Anshuman Khaund <ansh.khaund@gmail.com>
 
 import numpy as np
-from pandas.api.types import CategoricalDtype as cat_d
+import pandas as pd
 
 
 def reduce_memory_usage(df, verbose=True):
@@ -36,11 +36,13 @@ def reduce_memory_usage(df, verbose=True):
               f"({1 - (end_memory / start_memory):.1%} reduction).")
     return df
 
+
 def to_categoricals(df):
     """ Converts all columns to categorical data """
     for col in df:
-        df[col] = df[col].astype(cat_d(
-            categories=df[col].unique(),
-            ordered=True,
-        ))
+        df[col] = df[col].astype(
+            pd.api.types.CategoricalDtype(
+                categories=df[col].unique(),
+                ordered=True,
+            ))
     return df
